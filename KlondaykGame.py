@@ -1,7 +1,6 @@
-#!!!СОЗДАНИЕ МАТРИЦЫ(10*10)!!!
 # Функция для создания нулевой матрици
 def new_matrix(field):
-    matrix = [[0]*(field+1) for _ in range(field+1)]
+    matrix = [['0']*(field+1) for _ in range(field+1)]
     for i in range(field+1):
         matrix[0][i] = i
         matrix[i][0] = i
@@ -28,7 +27,7 @@ for i in range(1,10):
 for i in range(1,12):
     matrix[11][i] = '—'
 
-# Функция проверки
+# Функция проверки поля
 def chek_1(x,y,matrix):
     count_1 = 0
     sp_koord = []
@@ -64,82 +63,78 @@ def chek_1(x,y,matrix):
         return 'Играем дальше'
 
 
-#!!!НАЧАЛО ИГРЫ!!!
+# Функция проверки на цифры
+def chek_numbers(x,y):
+    while y.isdigit() != True or x.isdigit() != True:
+        print('Введите цифры в координатак')
+        y, x = input('введите координату y: '), input('введите координату x: ')
+    return [int(y), int(x)]
 
+# Функция проверки на попадание в поле и на свободную клетку
+def chek_float(x,y):
+    while ((0 < int(x) <= 10) + (0 < int(y) <= 10)) != 2:
+        print('Введите координаты в переделах поля')
+        y, x = (input('введите координату y: ')), (input('введите координату x: '))
+        while y.isdigit() != True or x.isdigit() != True:
+            print('Введите цифры в координатак')
+            y, x = input('введите координату y: '), input('введите координату x: ')
+
+    while matrix[int(y)][int(x)] == 'X':
+        print('Эта клетка уже зарята')
+        y, x = (input('введите координату y: ')), (input('введите координату x: '))
+        while y.isdigit() != True and x.isdigit() != True:
+            print('Введите цифры в координатак')
+            y, x = input('введите координату y: '), input('введите координату x: ')
+            while ((0 < int(x) <= 10) + (0 < int(y) <= 10)) != 2:
+                print('Введите координаты в переделах поля')
+                y, x = (input('введите координату y: ')), (input('введите координату x: '))
+        while ((0 < int(x) <= 10) + (0 < int(y) <= 10)) != 2:
+            print('Введите координаты в переделах поля')
+            y, x = (input('введите координату y: ')), (input('введите координату x: '))
+            while y.isdigit() != True or x.isdigit() != True:
+                print('Введите цифры в координатак')
+                y, x = input('введите координату y: '), input('введите координату x: ')
+                while ((0 < int(x) <= 10) + (0 < int(y) <= 10)) != 2:
+                    print('Введите координаты в переделах поля')
+                    y, x = (input('введите координату y: ')), (input('введите координату x: '))
+
+    return [int(y), int(x)]
+
+
+
+#!!!НАЧАЛО ИГРЫ!!!
 flag = True
 while flag == True:
     # Запрос y и x
-    y, x = int(input('введите координату y: ')), int(input('введите координату x: '))
-    # Проверка, попадают ли координаты в поле
-    if (0 < x <= 10) and (0 < y <= 10):
-        # Запись этих кооринат
-        koord_1_x = x
-        koord_1_y = y
-    else:
-        # если координаты выходят за приделы поля, то повторить запрос, пока не поставят фишку в приделы поля
-        position = False
-        while position == False:
-            print('Введите координаты, соответствующие размеру поля')
-            y, x = int(input('введите координату y: ')), int(input('введите координату x: '))
-            if (0 < x <= 10) and (0 < y <= 10):
-                # Запись этих кооринат
-                koord_1_x = x
-                koord_1_y = y
-                position = True
-    # Проверка, свободна ли клетка
-    if matrix[y][x] != 'X':
-        matrix[y][x] = 'X'
-    else:
-        # Если клетка занята нужно запрашивать координаты, пока игрок не поставит фишку на свободное поле
-        position = False
-        while position == False:
-            print('Эта клетка уже занята, введите координаты повторно')
-            y, x = int(input('введите координату y: ')),int(input('введите координату x: '))
-            if matrix[y][x] != 'X':
-                matrix[y][x] = 'X'
-                position = True
-                # ВАЖНО тут тоже нужно делать проверку (Проверка 1)
-                if chek_1(koord_1_x, koord_1_y, matrix) == 'Вы проиграли!':
-                    print('Вы проиграли!')
-                    flag = False
-                if chek_1(koord_1_x, koord_1_y, matrix) == 'Играем дальше':
-                    flag = True
-                if chek_1(koord_1_x, koord_1_y, matrix) != 'Играем дальше' and chek_1(koord_1_x, koord_1_y,
-                                                                                      matrix) != 'Вы проиграли!':
-                    # (Проверка 2)
-                    result_after_1_chek = list(map(int, chek_1(koord_1_x, koord_1_y, matrix)))
-                    second_check = chek_1(result_after_1_chek[1], result_after_1_chek[0], matrix)
-                    if second_check == 'Вы проиграли!':
-                        print('Вы проиграли!')
-                        flag = False
+    y, x = input('Введите координату y: '), input('введите координату x: ')
+
+    # Проверка координат
+    list_1 = chek_numbers(x,y)
+    list_2 = chek_float(list_1[0],list_1[1])
+
+    # Записываем координаты
+    koord_x, koord_y = list_2[1], list_2[0]
+
+
+    # Ввод в матрицу
+    matrix[koord_y][koord_x] = 'X'
 
     # Вывод матрицы после хода игрока
-    print_matrix(matrix,field)
+    print_matrix(matrix, field)
 
+    # Проверка на проигрыш
     # Первая проверка
-    if chek_1(koord_1_x,koord_1_y,matrix) == 'Вы проиграли!':
+    if chek_1(koord_x, koord_y, matrix) == 'Вы проиграли!':
         print('Вы проиграли!')
         flag = False
-    if chek_1(koord_1_x,koord_1_y,matrix) == 'Играем дальше':
+
+    if chek_1(koord_x, koord_y, matrix) == 'Играем дальше':
         flag = True
-    if chek_1(koord_1_x,koord_1_y,matrix) != 'Играем дальше' and chek_1(koord_1_x,koord_1_y,matrix) != 'Вы проиграли!':
+
+    if chek_1(koord_x, koord_y, matrix) != 'Играем дальше' and chek_1(koord_x, koord_y,matrix) != 'Вы проиграли!':
         # Вторая проверка
-        result_after_1_chek = list(map(int,chek_1(koord_1_x,koord_1_y,matrix)))
-        second_check = chek_1(result_after_1_chek[1],result_after_1_chek[0],matrix)
+        result_after_1_chek = list(map(int, chek_1(koord_x, koord_y, matrix)))
+        second_check = chek_1(result_after_1_chek[1], result_after_1_chek[0], matrix)
         if second_check == 'Вы проиграли!':
             print('Вы проиграли!')
             flag = False
-
-
-
-
-    
-
-        
-        
-        
-    
-    
-
-    
-#ЙОУ
